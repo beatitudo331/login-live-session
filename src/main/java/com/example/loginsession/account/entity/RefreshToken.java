@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
-@Setter
 public class RefreshToken {
 
     @Id
@@ -24,8 +23,21 @@ public class RefreshToken {
 
     public RefreshToken() {}
 
-    public RefreshToken(String token, String email) {
+    private void setRefreshToken(String token) {
         this.refreshToken = token;
+    }
+
+    private void setAccountEmail(String email) {
         this.accountEmail = email;
+    }
+
+    public RefreshToken(String token, String email) {
+        setRefreshToken(token);
+        setAccountEmail(email);
+    }
+
+    public RefreshToken update(String token) {
+        setRefreshToken(token);
+        return this;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.loginsession.account.service.impl;
 
 import com.example.loginsession.account.dto.AccountReqDto;
-import com.example.loginsession.account.dto.LoginReqDot;
+import com.example.loginsession.account.dto.LoginReqDto;
 import com.example.loginsession.account.entity.Account;
 import com.example.loginsession.account.entity.RefreshToken;
 import com.example.loginsession.account.repository.AccountRepository;
@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
@@ -47,13 +48,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public GlobalResDto login(LoginReqDot loginReqDot, HttpServletResponse response) {
+    public GlobalResDto login(LoginReqDto loginReqDto, HttpServletResponse response) {
 
-        Account account = accountRepository.findByEmail(loginReqDot.getEmail()).orElseThrow(
+        Account account = accountRepository.findByEmail(loginReqDto.getEmail()).orElseThrow(
                 ()->new RuntimeException("Not Find Account")
         );
 
-        if(!passwordEncoder.matches(loginReqDot.getPassword(), account.getPassword())){
+        if(!passwordEncoder.matches(loginReqDto.getPassword(), account.getPassword())){
             throw new RuntimeException("Not Match Password");
         }
 
@@ -63,14 +64,16 @@ public class AccountServiceImpl implements AccountService {
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByAccountEmail(account.getEmail());
 
         if(refreshToken.isPresent()) {
-            refreshToken.get().setRefreshToken(tokenDto.getRefreshToken());
-            refreshTokenRepository.save(refreshToken.get());
+            refreshTokenRepository.save(refreshToken.get().update(tokenDto.getRefreshToken()));
         }else{
             RefreshToken newRefreshToken = new RefreshToken(tokenDto.getRefreshToken(), account.getEmail());
             refreshTokenRepository.save(newRefreshToken);
         }
 
         setTokenOnHeader(response, tokenDto);
+
+        Cookie setCookie = new Cookie("AccessCookie", tokenDto.getAccessToken());
+        response.addCookie(setCookie);
 
         return new GlobalResDto("Login Success", HttpStatus.OK.value());
     }

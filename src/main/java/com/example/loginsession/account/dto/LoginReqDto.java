@@ -5,7 +5,7 @@ import lombok.Getter;
 import javax.validation.constraints.NotBlank;
 
 @Getter
-public class LoginReqDot {
+public class LoginReqDto {
     @NotBlank
     private String email;
     @NotBlank

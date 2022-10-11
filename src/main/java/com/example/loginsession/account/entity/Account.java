@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
-@Setter
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,15 +25,36 @@ public class Account {
 
     public Account() {}
 
+    private void setEmail(String email) {
+        this.email = email;
+    }
+
+    private void setPassword(String password) {
+        this.password = password;
+    }
+
+    private void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    private void setKakaoId(Long id) {
+        this.kakaoId = id;
+    }
+
     public Account(AccountReqDto accountReqDto) {
-        this.email = accountReqDto.getEmail();
-        this.password = accountReqDto.getPassword();
-        this.phoneNumber = accountReqDto.getPhoneNumber();
+        setEmail(accountReqDto.getEmail());
+        setPassword(accountReqDto.getPassword());
+        setPhoneNumber(accountReqDto.getPhoneNumber());
     }
 
     public Account(String encodedPassword, String email, Long kakaoId) {
-        this.password = encodedPassword;
-        this.email = email;
-        this.kakaoId = kakaoId;
+        setPassword(encodedPassword);
+        setEmail(email);
+        setKakaoId(kakaoId);
+    }
+
+    public Account kakaoIdUpdate(Long kakaoId) {
+        setKakaoId(kakaoId);
+        return this;
     }
 }

@@ -34,6 +34,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
             setAuthentication(jwtUtil.getEmailFromToken(accessToken));
+            return;
         }else if(refreshToken != null) {
             if(!jwtUtil.refreshTokenValidation(refreshToken)){
                 jwtExceptionHandler(response, "RefreshToken Expired", HttpStatus.BAD_REQUEST);
@@ -41,6 +42,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
             setAuthentication(jwtUtil.getEmailFromToken(refreshToken));
         }
+
+        System.out.println("여기까지 들어오는지 확인");
 
         filterChain.doFilter(request,response);
 

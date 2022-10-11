@@ -1,7 +1,7 @@
 package com.example.loginsession.account;
 
 import com.example.loginsession.account.dto.AccountReqDto;
-import com.example.loginsession.account.dto.LoginReqDot;
+import com.example.loginsession.account.dto.LoginReqDto;
 import com.example.loginsession.account.service.AccountService;
 import com.example.loginsession.account.service.KakaoService;
 import com.example.loginsession.global.dto.GlobalResDto;
@@ -31,8 +31,8 @@ public class AccountController {
     }
 
     @PostMapping("/account/login")
-    public GlobalResDto login(@RequestBody @Valid LoginReqDot loginReqDot, HttpServletResponse response) {
-        return accountService.login(loginReqDot, response);
+    public GlobalResDto login(@RequestBody @Valid LoginReqDto loginReqDto, HttpServletResponse response) {
+        return accountService.login(loginReqDto, response);
     }
 
     @GetMapping("/issue/token")
